@@ -31,11 +31,11 @@ interface VendorRepositoryInterface
     /**
      * Retrieve vendors matching the specified criteria.
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-     * @return \Magento\Cms\Api\Data\VendorSearchResultsInterface
+     * @param \Magento\Framework\Api\SearchCriteriaInterface|null $searchCriteria
+     * @return \GabrielGama\Vendor\Api\Data\VendorSearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getList(SearchCriteriaInterface $searchCriteria);
+    public function getList(SearchCriteriaInterface $searchCriteria = null);
 
     /**
      * Delete vendor.
@@ -49,10 +49,10 @@ interface VendorRepositoryInterface
     /**
      * Delete vendor by ID.
      *
-     * @param int $vendorId
+     * @param int $id
      * @return bool true on success
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function deleteById($vendorId);
+    public function deleteById($id);
 }

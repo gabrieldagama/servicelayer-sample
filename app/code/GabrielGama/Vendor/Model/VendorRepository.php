@@ -6,10 +6,10 @@ use GabrielGama\Vendor\Api\VendorRepositoryInterface;
 use GabrielGama\Vendor\Model\ResourceModel\Vendor as ResourceVendor;
 use GabrielGama\Vendor\Model\ResourceModel\Vendor\CollectionFactory as VendorCollectionFactory;
 use GabrielGama\Vendor\Api\Data\VendorSearchResultsInterfaceFactory;
-use GabrielGama\Vendor\Api\Data\VendorInterfaceFactory;
 use GabrielGama\Vendor\Api\Data\VendorInterface;
 use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Api\SearchCriteriaFactory;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -52,41 +52,41 @@ class VendorRepository implements VendorRepositoryInterface
     protected $dataObjectProcessor;
 
     /**
-     * @var VendorInterfaceFactory
-     */
-    protected $dataVendorFactory;
-
-    /**
      * @var CollectionProcessorInterface
      */
     private $collectionProcessor;
+    
+    /**
+     * @var SearchCriteriaFactory 
+     */
+    private $searchCriteriaFactory;
 
     /**
      * @param ResourceVendor $resource
      * @param VendorFactory $vendorFactory
-     * @param VendorInterfaceFactory $dataVendorFactory
      * @param VendorCollectionFactory $vendorCollectionFactory
      * @param VendorSearchResultsInterfaceFactory $searchResultsFactory
      * @param DataObjectHelper $dataObjectHelper
      * @param DataObjectProcessor $dataObjectProcessor
      * @param CollectionProcessorInterface $collectionProcessor
+     * @param SearchCriteriaFactory $searchCriteriaFactory
      */
     public function __construct(
         ResourceVendor $resource,
         VendorFactory $vendorFactory,
-        VendorInterfaceFactory $dataVendorFactory,
         VendorCollectionFactory $vendorCollectionFactory,
         VendorSearchResultsInterfaceFactory $searchResultsFactory,
         DataObjectHelper $dataObjectHelper,
         DataObjectProcessor $dataObjectProcessor,
-        CollectionProcessorInterface $collectionProcessor
+        CollectionProcessorInterface $collectionProcessor,
+        SearchCriteriaFactory $searchCriteriaFactory
     ) {
         $this->resource = $resource;
         $this->vendorFactory = $vendorFactory;
         $this->vendorCollectionFactory = $vendorCollectionFactory;
+        $this->searchCriteriaFactory = $searchCriteriaFactory;
         $this->searchResultsFactory = $searchResultsFactory;
         $this->dataObjectHelper = $dataObjectHelper;
-        $this->dataVendorFactory = $dataVendorFactory;
         $this->dataObjectProcessor = $dataObjectProcessor;
         $this->collectionProcessor = $collectionProcessor;
     }
@@ -130,35 +130,25 @@ class VendorRepository implements VendorRepositoryInterface
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $criteria
+     * @param \Magento\Framework\Api\SearchCriteriaInterface|null $criteria
      * @return \GabrielGama\Vendor\Api\Data\VendorSearchResultsInterface
      */
-    public function getList(\Magento\Framework\Api\SearchCriteriaInterface $criteria)
+    public function getList(\Magento\Framework\Api\SearchCriteriaInterface $criteria = null)
     {
         $collection = $this->vendorCollectionFactory->create();
-
-        $this->collectionProcessor->process($criteria, $collection);
-
-        $vendors = [];
-        /** @var Vendor $model */
-        foreach ($collection as $model) {
-            $vendorData = $this->dataVendorFactory->create();
-            $this->dataObjectHelper->populateWithArray(
-                $vendorData,
-                $model->getData(),
-                \GabrielGama\Vendor\Api\Data\VendorInterface::class
-            );
-            $vendors[] = $this->dataObjectProcessor->buildOutputDataArray(
-                $vendorData,
-                \GabrielGama\Vendor\Api\Data\VendorInterface::class
-            );
+        
+        if (is_null($criteria)) {
+            $criteria = $this->searchCriteriaFactory->create();
         }
-
+        
+        $this->collectionProcessor->process($criteria, $collection);
+            
         /** @var VendorSearchResultsInterface $searchResults */
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($criteria);
-        $searchResults->setItems($vendors);
+        $searchResults->setItems($collection->getItems());
         $searchResults->setTotalCount($collection->getSize());
+        
         return $searchResults;
     }
 
@@ -182,14 +172,14 @@ class VendorRepository implements VendorRepositoryInterface
     /**
      * Delete Vendor by given Vendor Id
      *
-     * @param string $id
+     * @param int $id
      * @return bool
      * @throws CouldNotDeleteException
      * @throws NoSuchEntityException
      */
     public function deleteById($id)
     {
-        return $this->delete($this->getById($id));
+        return $this->delete($this->get($id));
     }
 
 }

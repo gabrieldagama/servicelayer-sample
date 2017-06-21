@@ -1,0 +1,9 @@
+<?php /** @var $block \GabrielGama\Vendor\Block\VendorList */ ?>
+<?php $activeVendors = $block->getActiveVendors(); ?>
+<h1>Vendors</h1>
+<h2>Active Vendors</h2>
+<ul>
+<?php foreach ($activeVendors as $vendor) { ?>
+    <li><p><?php echo $vendor->getName() ?></p></li>
+<?php } ?>
+</ul>

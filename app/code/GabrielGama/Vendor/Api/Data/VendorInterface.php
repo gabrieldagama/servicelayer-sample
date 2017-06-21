@@ -12,7 +12,7 @@ interface VendorInterface
     const ID         = 'id';
     const NAME       = 'name';
     const IS_ACTIVE = 'is_active';
-
+    
     /**
      * Get ID
      *

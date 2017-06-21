@@ -31,4 +31,16 @@
             <resource ref="anonymous"/>
         </resources>
     </route>
+    <route url="/V1/vendor/activate/:id" method="POST">
+        <service class="GabrielGama\Vendor\Api\VendorManagementInterface" method="activate"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route url="/V1/vendor/deactivate/:id" method="POST">
+        <service class="GabrielGama\Vendor\Api\VendorManagementInterface" method="deactivate"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
 </routes>

@@ -10,6 +10,9 @@ use Magento\Framework\Model\AbstractModel;
  */
 class Vendor extends AbstractModel implements VendorInterface
 {
+    const ACTIVE = 1;
+    
+    const NOT_ACTIVE = 0;
     
     /**
      * @return void

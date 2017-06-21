@@ -4,4 +4,5 @@
     <preference for="GabrielGama\Vendor\Api\Data\VendorSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
     <preference for="GabrielGama\Vendor\Api\Data\VendorInterface" type="GabrielGama\Vendor\Model\Vendor" />
     <preference for="GabrielGama\Vendor\Api\VendorRepositoryInterface" type="GabrielGama\Vendor\Model\VendorRepository" />
+    <preference for="GabrielGama\Vendor\Api\VendorManagementInterface" type="GabrielGama\Vendor\Model\VendorManagement" />
 </config>
