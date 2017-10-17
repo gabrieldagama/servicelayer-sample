@@ -9,12 +9,6 @@
         "magento/framework": "100.2.*",
         "lib-libxml": "*"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/gabrieldagama/servicelayer-sample"
-        }
-    ],
     "autoload": {
         "files": [
             "registration.php"
